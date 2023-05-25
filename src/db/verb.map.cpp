@@ -1,3 +1,29 @@
+// single-schema DB
+// native types are (sst):
+//   string
+//   mint
+//   tf
+// string-based semantic types are
+//   enum
+//   date
+//   guid
+//
+// --view syntax--                      check?   mutate?   up?   down?
+// type: [sst|compose|table]
+// inherit: rel-path
+// default<random>: field                                  Y
+// default: field=value                                    Y
+// now: field=value                                        Y
+// on-modify: now: field=value                   Y
+// unique: field                        Y
+// enum<a,b,c>: field                   Y
+// checkbox field when value                               Y     Y
+// filter: <<RPN>>                                               Y
+// sort: a,-b,c                                                  Y
+// cols: a,b,c                                                   Y
+//
+
+
 #define WIN32_LEAN_AND_MEAN
 #include "../cmn/autoPtr.hpp"
 #include "../cmn/service.hpp"
