@@ -1,0 +1,5 @@
+  # here lies a comment
+type: diff
+
+# another
+foo

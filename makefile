@@ -8,6 +8,7 @@ DEBUG_LNK_FLAGS_POST = -ggdb -static-libgcc -static-libstdc++ -static
 RELEASE_LNK_FLAGS_POST = -static-libgcc -static-libstdc++ -static
 
 all: \
+	$(OUT_DIR)/debug/command.dll \
 	$(OUT_DIR)/debug/console.dll \
 	$(OUT_DIR)/debug/db.exe \
 	$(OUT_DIR)/debug/exec.dll \
@@ -15,13 +16,16 @@ all: \
 	$(OUT_DIR)/debug/file.test.dll \
 	$(OUT_DIR)/debug/tcatbin.dll \
 	$(OUT_DIR)/debug/test.exe \
+	$(OUT_DIR)/debug/view.diff.dll \
+	$(OUT_DIR)/release/command.dll \
 	$(OUT_DIR)/release/console.dll \
 	$(OUT_DIR)/release/db.exe \
 	$(OUT_DIR)/release/exec.dll \
 	$(OUT_DIR)/release/file.dll \
 	$(OUT_DIR)/release/file.test.dll \
 	$(OUT_DIR)/release/tcatbin.dll \
-	$(OUT_DIR)/release/test.exe
+	$(OUT_DIR)/release/test.exe \
+	$(OUT_DIR)/release/view.diff.dll
 	$(OUT_DIR)/debug/test.exe
 	$(OUT_DIR)/release/test.exe
 
@@ -89,6 +93,37 @@ $(OUT_DIR)/release/tcatbin.dll: $(TCATBIN_RELEASE_OBJ)
 $(TCATBIN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 	$(info $< --> $@)
 	@mkdir -p $(OBJ_DIR)/release/tcatbin
+	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
+
+# ----------------------------------------------------------------------
+# command
+
+COMMAND_SRC = \
+	src/command/program.cpp \
+	src/command/viewSpec.cpp \
+
+COMMAND_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(COMMAND_SRC)))
+
+$(OUT_DIR)/debug/command.dll: $(COMMAND_DEBUG_OBJ) $(OUT_DIR)/debug/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/debug
+	@$(LINK_CMD) -shared -o $@ $(COMMAND_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib
+
+$(COMMAND_DEBUG_OBJ): $(OBJ_DIR)/debug/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/debug/command
+	@$(COMPILE_CMD) $(DEBUG_CC_FLAGS) $< -o $@
+
+COMMAND_RELEASE_OBJ = $(subst src,$(OBJ_DIR)/release,$(patsubst %.cpp,%.o,$(COMMAND_SRC)))
+
+$(OUT_DIR)/release/command.dll: $(COMMAND_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/release
+	@$(LINK_CMD) -shared -o $@ $(COMMAND_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib
+
+$(COMMAND_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/release/command
 	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
 
 # ----------------------------------------------------------------------
@@ -272,6 +307,36 @@ $(OUT_DIR)/release/test.exe: $(TEST_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
 $(TEST_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 	$(info $< --> $@)
 	@mkdir -p $(OBJ_DIR)/release/test
+	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
+
+# ----------------------------------------------------------------------
+# view.diff
+
+VIEWDIFF_SRC = \
+	src/view.diff/viewSpec.cpp \
+
+VIEWDIFF_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(VIEWDIFF_SRC)))
+
+$(OUT_DIR)/debug/view.diff.dll: $(VIEWDIFF_DEBUG_OBJ) $(OUT_DIR)/debug/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/debug
+	@$(LINK_CMD) -shared -o $@ $(VIEWDIFF_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib
+
+$(VIEWDIFF_DEBUG_OBJ): $(OBJ_DIR)/debug/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/debug/view.diff
+	@$(COMPILE_CMD) $(DEBUG_CC_FLAGS) $< -o $@
+
+VIEWDIFF_RELEASE_OBJ = $(subst src,$(OBJ_DIR)/release,$(patsubst %.cpp,%.o,$(VIEWDIFF_SRC)))
+
+$(OUT_DIR)/release/view.diff.dll: $(VIEWDIFF_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/release
+	@$(LINK_CMD) -shared -o $@ $(VIEWDIFF_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib
+
+$(VIEWDIFF_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/release/view.diff
 	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
 
 # ----------------------------------------------------------------------

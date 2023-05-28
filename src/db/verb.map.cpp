@@ -28,22 +28,38 @@
 #include "../cmn/autoPtr.hpp"
 #include "../cmn/service.hpp"
 #include "../cmn/win32.hpp"
-#include "../cmn/wshsubproc.hpp"
+#include "../command/api.hpp"
 #include "../console/arg.hpp"
 #include "../console/log.hpp"
 #include "../cui/api.hpp"
 #include "../cui/pen.hpp"
 #include "../file/api.hpp"
 #include "../file/manager.hpp"
+#include "../model/api.hpp"
 #include "../tcatlib/api.hpp"
 #include <fstream>
 #include <memory>
 
 namespace {
 
-class intCommand : public console::iCommand {
+class loadViewCommand {};      // path, view
+class parseViewSpecCommand {}; // path, viewSpec
+class parseViewCommand {};     // path, view
+
+class unmapViewCommand {};     // view
+
+class mapViewCommand {};       // view
+
+class checkViewCommand {};     // view
+
+class mergeViewCommand {};     // view, view
+
+class saveViewCommand {};      // model, path
+
+class mapCommand : public console::iCommand {
 public:
-   std::string oCannedInputFile;
+   std::string oInputView;
+   std::string oOutputView;
 
    virtual void run(console::iLog& l);
 };
@@ -53,19 +69,20 @@ protected:
    virtual console::verbBase *inflate()
    {
       std::unique_ptr<console::verbBase> v(
-         new console::verb<intCommand>("--int"));
+         new console::verb<mapCommand>("--map"));
 
       v->addParameter(
-         console::stringParameter::optional(offsetof(intCommand,oCannedInputFile)));
+         console::stringParameter::required(offsetof(mapCommand,oInputView)));
+      v->addParameter(
+         console::stringParameter::required(offsetof(mapCommand,oOutputView)));
 
       return v.release();
    }
 } gVerb;
 
-void intCommand::run(console::iLog& l)
+void mapCommand::run(console::iLog& l)
 {
    tcat::typePtr<file::iFileManager> fMan;
-   //l.writeLnDebug("loading config settings (optional)");
    cmn::autoReleasePtr<file::iSstFile> pFile(&fMan->bindFile<file::iSstFile>(
       file::iFileManager::kExeAdjacent,
       "config.sst",
@@ -73,20 +90,18 @@ void intCommand::run(console::iLog& l)
    ));
    pFile->tie(l);
 
-   //l.writeLnDebug("setup the shmem");
-   cmn::shmem<cmn::wshSubprocBlock> pShmem(
-      cmn::buildWshSubprocShmemName(::GetCurrentProcessId()));
-   if(!pShmem.existed())
-      throw std::runtime_error("don't appear to be running under wsh?");
-
-   //l.writeLnDebug("compiling services");
    tcat::typePtr<cmn::serviceManager> svcMan;
-   pen::object _pen(std::cout);
-   cmn::autoService<pen::object> _penSvc(*svcMan,_pen);
+   cmn::autoService<console::iLog> _logSvc(*svcMan,l);
 
-   //l.writeLnDebug("loading canned input");
+   l.writeLnInfo("db " __DATE__ " " __TIME__);
 
-   l.writeLnInfo("wsh " __DATE__ " " __TIME__);
+   tcat::typePtr<cmd::iProgram> pProg;
+
+   model::view in;
+
+   pProg->add(*new cmd::loadViewCommand(oInputView,in));
+
+   pProg->execute();
 }
 
 } // anonymous namespace
