@@ -1,6 +1,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include "../command/viewSpec.hpp"
+#include "../model/api.hpp"
 #include "../tcatlib/api.hpp"
+#include "load.hpp"
+#include <memory>
 #include <windows.h>
 
 namespace view_diff {
@@ -18,6 +21,14 @@ public:
    }
 
    virtual bool handlesType(const std::string& type) const { return type == "diff"; }
+
+   virtual model::viewSpec& createViewSpec() const
+   {
+      std::unique_ptr<model::viewSpec> pVs(new model::viewSpec());
+      pVs->type = "diff";
+      pVs->parserTypeName = typeid(parser).name();
+      return *pVs.release();
+   }
 
 private:
    tcat::typePtr<cmd::iViewSpecLineParser> pBase;

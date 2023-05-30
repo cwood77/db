@@ -2,6 +2,7 @@
 #include "api.hpp"
 #include "viewSpec.hpp"
 #include <fstream>
+#include <memory>
 
 namespace cmd {
 namespace {
@@ -18,7 +19,7 @@ class topViewSpecParser : public iTopViewSpecParser {
 public:
    topViewSpecParser() : m_pMatch(NULL) {}
 
-   virtual void parse(model::viewSpec& vs, std::istream& s)
+   virtual model::viewSpec& parse(std::istream& s)
    {
       while(true)
       {
@@ -30,15 +31,17 @@ public:
          if(line.empty())
             continue;
 
-         handleLine(vs,line);
+         handleLine(line);
       }
 
-      if(vs.type.empty())
+      if(!m_pSpec.get() || m_pSpec->type.empty())
          throw std::runtime_error("viewSpec indicates no type?");
+
+      return *m_pSpec.release();
    }
 
 private:
-   void handleLine(model::viewSpec& vs, const std::string& line)
+   void handleLine(const std::string& line)
    {
       // comments
       const char *pThumb = line.c_str();
@@ -47,18 +50,18 @@ private:
          return;
 
       if(m_pMatch)
-         m_pMatch->parse(vs,line);
+         m_pMatch->parse(*m_pSpec,line);
       else
-         handleLineUntyped(vs,line);
+         handleLineUntyped(line);
    }
 
-   void handleLineUntyped(model::viewSpec& vs, const std::string& line)
+   void handleLineUntyped(const std::string& line)
    {
       const char *pThumb = line.c_str();
       if(cmn::startsWithAndAdvance(pThumb,"type: "))
       {
-         vs.type = pThumb;
          matchSpecificParser(pThumb);
+         m_pSpec.reset(&m_pMatch->createViewSpec());
       }
       else
          throw std::runtime_error(std::string("unknown viewSpec line: ") + line);
@@ -76,11 +79,12 @@ private:
 
    tcat::typeSet<iViewSpecParser> m_parserSet;
    iViewSpecParser *m_pMatch;
+   std::unique_ptr<model::viewSpec> m_pSpec;
 };
 
 class parseViewSpecCommandImpl : public iParseViewSpecCommandImpl {
 public:
-   parseViewSpecCommandImpl() : m_pOut(NULL) {}
+   parseViewSpecCommandImpl() : m_ppSpec(NULL) {}
 
    virtual void execute()
    {
@@ -89,18 +93,18 @@ public:
          throw std::runtime_error(std::string("can't open file:") + m_path);
 
       tcat::typePtr<iTopViewSpecParser> pParser;
-      pParser->parse(*m_pOut,in);
+      *m_ppSpec = &pParser->parse(in);
    }
 
-   virtual void configure(const std::string& path, model::viewSpec& out)
+   virtual void configure(const std::string& path, model::viewSpec **ppSpec)
    {
       m_path = path;
-      m_pOut = &out;
+      m_ppSpec = ppSpec;
    }
 
 private:
    std::string m_path;
-   model::viewSpec *m_pOut;
+   model::viewSpec **m_ppSpec;
 };
 
 tcatExposeTypeAs(commonViewSpecParser,iCommonViewSpecParser);

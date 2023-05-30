@@ -9,6 +9,7 @@ RELEASE_LNK_FLAGS_POST = -static-libgcc -static-libstdc++ -static
 
 all: \
 	$(OUT_DIR)/debug/command.dll \
+	$(OUT_DIR)/debug/command.test.dll \
 	$(OUT_DIR)/debug/console.dll \
 	$(OUT_DIR)/debug/db.exe \
 	$(OUT_DIR)/debug/exec.dll \
@@ -18,6 +19,7 @@ all: \
 	$(OUT_DIR)/debug/test.exe \
 	$(OUT_DIR)/debug/view.diff.dll \
 	$(OUT_DIR)/release/command.dll \
+	$(OUT_DIR)/release/command.test.dll \
 	$(OUT_DIR)/release/console.dll \
 	$(OUT_DIR)/release/db.exe \
 	$(OUT_DIR)/release/exec.dll \
@@ -100,7 +102,11 @@ $(TCATBIN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 
 COMMAND_SRC = \
 	src/command/program.cpp \
+	src/command/saveload.cpp \
 	src/command/viewSpec.cpp \
+
+COMMAND_TEST_SRC = \
+	src/command/viewSpec.test.cpp \
 
 COMMAND_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(COMMAND_SRC)))
 
@@ -124,6 +130,30 @@ $(OUT_DIR)/release/command.dll: $(COMMAND_RELEASE_OBJ) $(OUT_DIR)/release/tcatli
 $(COMMAND_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 	$(info $< --> $@)
 	@mkdir -p $(OBJ_DIR)/release/command
+	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
+
+COMMAND_TEST_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(COMMAND_TEST_SRC)))
+
+$(OUT_DIR)/debug/command.test.dll: $(COMMAND_TEST_DEBUG_OBJ) $(OUT_DIR)/debug/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/debug
+	@$(LINK_CMD) -shared -o $@ $(COMMAND_TEST_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib
+
+$(COMMAND_TEST_DEBUG_OBJ): $(OBJ_DIR)/debug/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/debug/command.test
+	@$(COMPILE_CMD) $(DEBUG_CC_FLAGS) $< -o $@
+
+COMMAND_TEST_RELEASE_OBJ = $(subst src,$(OBJ_DIR)/release,$(patsubst %.cpp,%.o,$(COMMAND_TEST_SRC)))
+
+$(OUT_DIR)/release/command.test.dll: $(COMMAND_TEST_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/release
+	@$(LINK_CMD) -shared -o $@ $(COMMAND_TEST_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib
+
+$(COMMAND_TEST_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/release/command.test
 	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
 
 # ----------------------------------------------------------------------
@@ -313,6 +343,7 @@ $(TEST_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 # view.diff
 
 VIEWDIFF_SRC = \
+	src/view.diff/load.cpp \
 	src/view.diff/viewSpec.cpp \
 
 VIEWDIFF_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(VIEWDIFF_SRC)))

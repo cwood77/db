@@ -16,6 +16,7 @@ public:
 class iViewSpecParser : public iViewSpecLineParser {
 public:
    virtual bool handlesType(const std::string& type) const = 0;
+   virtual model::viewSpec& createViewSpec() const = 0;
 };
 
 class iCommonViewSpecParser : public iViewSpecLineParser {};
@@ -23,7 +24,7 @@ class iCommonViewSpecParser : public iViewSpecLineParser {};
 class iTopViewSpecParser {
 public:
    virtual ~iTopViewSpecParser() {}
-   virtual void parse(model::viewSpec& vs, std::istream& s) = 0;
+   virtual model::viewSpec& parse(std::istream& s) = 0;
 };
 
 } // namespace cmd

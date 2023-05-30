@@ -17,18 +17,37 @@ public:
    std::list<record> records;
 };
 
-class iRule {};
+class iRule {
+public:
+   virtual ~iRule() {}
+};
 
 class viewSpec {
 public:
+   virtual ~viewSpec()
+   {
+      for(auto *pRule : rules)
+         delete pRule;
+   }
+
    std::string type;
    std::list<iRule*> rules;
    std::string filter;
    std::string sort;
    std::string fields;
+
+   std::string parserTypeName;
+   std::string formatterTypeName;
 };
 
-class view { public: viewSpec s; model m; };
+class view {
+public:
+   view() : pSpec(NULL) {}
+   virtual ~view() { delete pSpec; }
+
+   viewSpec *pSpec;
+   model model;
+};
 
 } // namespace model
 
