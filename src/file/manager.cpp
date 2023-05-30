@@ -2,6 +2,7 @@
 #include "../cmn/autoPtr.hpp"
 #include "../tcatlib/api.hpp"
 #include "manager-i.hpp"
+#include <fstream>
 #include <list>
 #include <stdio.h>
 #include <windows.h>
@@ -117,6 +118,14 @@ masterFileList::~masterFileList()
       ::printf("[file] master file list shutdown with %lld outstanding entries\n",
          m_table.size());
    }
+   if(m_unqueriedFakes.size())
+   {
+      ::printf("======= BUG =======\n");
+      ::printf("[file] master file list shutdown with %lld unused fakes\n",
+         m_unqueriedFakes.size());
+      for(auto name : m_unqueriedFakes)
+         ::printf("  '%s'\n",name.c_str());
+   }
 }
 
 void masterFileList::publish(const std::string& path, fileBase& inst)
@@ -133,6 +142,22 @@ void masterFileList::flushAllOpen()
 {
    for(auto it=m_table.begin();it!=m_table.end();++it)
       it->second->flush();
+}
+
+void masterFileList::publishFakeStream(const std::string& path, std::istream& contents)
+{
+   m_fakeStreams[path] = &contents;
+   m_unqueriedFakes.insert(path);
+}
+
+std::istream *masterFileList::queryFakeStream(const std::string& path)
+{
+   auto it = m_fakeStreams.find(path);
+   if(it == m_fakeStreams.end())
+      return NULL;
+
+   m_unqueriedFakes.erase(path);
+   return it->second;
 }
 
 sstFile::sstFile(const sst::iNodeFactory& nf)
@@ -265,6 +290,27 @@ bool fileManager::isFolderEmpty(const std::string& path, const std::set<std::str
    } while(::FindNextFileA(hFind,&fData));
    ::FindClose(hFind);
    return true;
+}
+
+iFileInStream& fileManager::demandReadStream(const std::string& path)
+{
+   tcat::typePtr<iMasterFileList> pMaster;
+   auto *pFake = pMaster->queryFakeStream(path);
+   if(pFake)
+      return *new fakeFileInStream(*pFake);
+   else
+   {
+      std::unique_ptr<std::ifstream> in(new std::ifstream(path.c_str()));
+      if(!in->good())
+         throw std::runtime_error(std::string("can't open file:") + path);
+      return *new realFileInStream(*in.release());
+   }
+}
+
+void fileManager::fakeReadStream(const std::string& path, std::istream& contents)
+{
+   tcat::typePtr<iMasterFileList> pMaster;
+   pMaster->publishFakeStream(path,contents);
 }
 
 void fileManager::flushAllOpen()

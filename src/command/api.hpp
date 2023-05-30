@@ -73,7 +73,7 @@ public:
 
    virtual void queue(iProgram& p)
    {
-      p.add(*new parseViewSpecCommand(m_path,&m_out.pSpec));
+      p.add(*new parseViewSpecCommand(m_path + ".viewSpec",&m_out.pSpec));
       p.add(*new parseViewCommand(m_path,m_out));
    }
 

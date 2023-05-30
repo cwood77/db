@@ -1,4 +1,6 @@
+#include "../cmn/autoPtr.hpp"
 #include "../cmn/string.hpp"
+#include "../file/manager.hpp"
 #include "api.hpp"
 #include "viewSpec.hpp"
 #include <fstream>
@@ -88,12 +90,11 @@ public:
 
    virtual void execute()
    {
-      std::ifstream in(m_path.c_str());
-      if(!in.good())
-         throw std::runtime_error(std::string("can't open file:") + m_path);
+      tcat::typePtr<file::iFileManager> fMan;
+      cmn::autoReleasePtr<file::iFileInStream> fStream(&fMan->demandReadStream(m_path));
 
       tcat::typePtr<iTopViewSpecParser> pParser;
-      *m_ppSpec = &pParser->parse(in);
+      *m_ppSpec = &pParser->parse(fStream->stream());
    }
 
    virtual void configure(const std::string& path, model::viewSpec **ppSpec)

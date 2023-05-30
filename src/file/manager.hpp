@@ -9,6 +9,7 @@ namespace console { class iLog; }
 namespace file {
 
 class iFile;
+class iFileInStream;
 
 class iFileManager {
 public:
@@ -55,6 +56,11 @@ public:
       return dynamic_cast<T&>(_bindFile(typeid(T).name(),path,onClose,f));
    }
 
+   virtual iFileInStream& demandReadStream(const std::string& path) = 0;
+
+   // used for mocking in testing
+   virtual void fakeReadStream(const std::string& path, std::istream& contents) = 0;
+
    // implement close actions for any open files now
    virtual void flushAllOpen() = 0;
 
@@ -83,6 +89,14 @@ class iSstFile : public virtual iFile {
 public:
    virtual sst::dict& dict() = 0;
    virtual sst::dict *abdicate() = 0;
+};
+
+class iFileInStream {
+public:
+   virtual ~iFileInStream() {}
+   virtual void release() = 0;
+
+   virtual std::istream& stream() = 0;
 };
 
 } // namespace file

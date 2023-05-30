@@ -48,6 +48,8 @@ public:
    virtual void publish(const std::string& path, fileBase& inst) = 0;
    virtual void rescind(const std::string& path, fileBase& inst) = 0;
    virtual void flushAllOpen() = 0;
+   virtual void publishFakeStream(const std::string& path, std::istream& contents) = 0;
+   virtual std::istream *queryFakeStream(const std::string& path) = 0;
 };
 
 class masterFileList : public iMasterFileList {
@@ -56,9 +58,13 @@ public:
    virtual void publish(const std::string& path, fileBase& inst);
    virtual void rescind(const std::string& path, fileBase& inst);
    virtual void flushAllOpen();
+   virtual void publishFakeStream(const std::string& path, std::istream& contents);
+   virtual std::istream *queryFakeStream(const std::string& path);
 
 private:
    std::map<std::string,fileBase*> m_table;
+   std::map<std::string,std::istream*> m_fakeStreams;
+   std::set<std::string> m_unqueriedFakes;
 };
 
 class sstFile : public fileBase, public iSstFile {
@@ -103,6 +109,28 @@ public:
    virtual void onClose(const std::string& path, fileBase& file, bool early) const;
 };
 
+class realFileInStream : public iFileInStream {
+public:
+   explicit realFileInStream(std::istream& s) : m_s(&s) {}
+
+   virtual void release() { delete this; }
+   virtual std::istream& stream() { return *m_s; }
+
+private:
+   std::unique_ptr<std::istream> m_s;
+};
+
+class fakeFileInStream : public iFileInStream {
+public:
+   explicit fakeFileInStream(std::istream& s) : m_s(s) {}
+
+   virtual void release() { delete this; }
+   virtual std::istream& stream() { return m_s; }
+
+private:
+   std::istream& m_s;
+};
+
 class fileManager : public iFileManager {
 public:
    static std::string splitLast(const std::string& path);
@@ -120,6 +148,9 @@ public:
    virtual void deleteFolderAndContentsIf(const char *path, console::iLog& l, bool really) const;
    virtual bool isFolder(const char *path) const;
    virtual bool doesFileExist(const std::string& path) const;
+
+   virtual iFileInStream& demandReadStream(const std::string& path);
+   virtual void fakeReadStream(const std::string& path, std::istream& contents);
 
    virtual void flushAllOpen();
 
