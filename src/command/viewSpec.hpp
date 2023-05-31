@@ -15,7 +15,6 @@ public:
 
 class iViewSpecParser : public iViewSpecLineParser {
 public:
-   virtual bool handlesType(const std::string& type) const = 0;
    virtual model::viewSpec& createViewSpec() const = 0;
 };
 

@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include "../cmn/service.hpp"
+#include "../cmn/talias.hpp"
 #include "../cmn/win32.hpp"
 #include "../file/api.hpp"
 #include "../tcatlib/api.hpp"
@@ -11,6 +12,7 @@
 namespace cmn {
 
 tcatExposeSingletonTypeAs(serviceManager,serviceManager);
+tcatExposeSingletonTypeAs(typeAliasTable,typeAliasTable);
 
 } // namespace cmn
 

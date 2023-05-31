@@ -28,6 +28,8 @@ class iRule {
 public:
    virtual ~iRule() {}
 
+   virtual void initialize(const std::string& string) = 0;
+
    virtual void unmap(view& v) = 0;
    virtual void map(view& v) = 0;
    virtual void check(view& v, iErrorReport& err) = 0;

@@ -1,2 +1,4 @@
   # here lies a comment
 type: diff
+
+rule: default

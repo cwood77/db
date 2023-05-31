@@ -1,5 +1,6 @@
 #include "../cmn/autoPtr.hpp"
 #include "../cmn/string.hpp"
+#include "../cmn/talias.hpp"
 #include "../file/manager.hpp"
 #include "api.hpp"
 #include "viewSpec.hpp"
@@ -13,14 +14,19 @@ class commonViewSpecParser : public iCommonViewSpecParser {
 public:
    virtual void parse(model::viewSpec& vs, const std::string& line)
    {
+      const char *pThumb = line.c_str();
+      if(cmn::startsWithAndAdvance(pThumb,"rule: "))
+      {
+         tcat::typePtr<cmn::typeAliasTable> talias;
+         talias->demand("rules",pThumb);
+      }
+
       throw std::runtime_error(std::string("unrecognized viewSpec line: ") + line);
    }
 };
 
 class topViewSpecParser : public iTopViewSpecParser {
 public:
-   topViewSpecParser() : m_pMatch(NULL) {}
-
    virtual model::viewSpec& parse(std::istream& s)
    {
       while(true)
@@ -52,7 +58,7 @@ private:
          return;
 
       if(m_pMatch)
-         m_pMatch->parse(*m_pSpec,line);
+         (*m_pMatch)->parse(*m_pSpec,line);
       else
          handleLineUntyped(line);
    }
@@ -63,7 +69,7 @@ private:
       if(cmn::startsWithAndAdvance(pThumb,"type: "))
       {
          matchSpecificParser(pThumb);
-         m_pSpec.reset(&m_pMatch->createViewSpec());
+         m_pSpec.reset(&(*m_pMatch)->createViewSpec());
       }
       else
          throw std::runtime_error(std::string("unknown viewSpec line: ") + line);
@@ -71,16 +77,13 @@ private:
 
    void matchSpecificParser(const std::string& type)
    {
-      for(size_t i=0;i<m_parserSet.size()&&!m_pMatch;i++)
-         if(m_parserSet[i]->handlesType(type))
-            m_pMatch = m_parserSet[i];
-
-      if(!m_pMatch)
-         throw std::runtime_error(std::string("no viewSpec parser knows type: ") + type);
+      tcat::typePtr<cmn::typeAliasTable> talias;
+      auto fullTypeName = talias->demand("views",type);
+      m_pMatch.reset(new tcat::typePtr<iViewSpecParser>(fullTypeName));
+      return;
    }
 
-   tcat::typeSet<iViewSpecParser> m_parserSet;
-   iViewSpecParser *m_pMatch;
+   std::unique_ptr<tcat::typePtr<iViewSpecParser> > m_pMatch;
    std::unique_ptr<model::viewSpec> m_pSpec;
 };
 

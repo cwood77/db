@@ -1,4 +1,5 @@
 #define WIN32_LEAN_AND_MEAN
+#include "../cmn/talias.hpp"
 #include "../command/viewSpec.hpp"
 #include "../model/api.hpp"
 #include "../tcatlib/api.hpp"
@@ -21,8 +22,6 @@ public:
       pBase->parse(vs,line);
    }
 
-   virtual bool handlesType(const std::string& type) const { return type == "diff"; }
-
    virtual model::viewSpec& createViewSpec() const
    {
       std::unique_ptr<model::viewSpec> pVs(new model::viewSpec());
@@ -36,7 +35,8 @@ private:
    tcat::typePtr<cmd::iViewSpecLineParser> pBase;
 };
 
-tcatExposeTypeAs(viewSpecParser,cmd::iViewSpecParser);
+tcatExposeTypeAs(viewSpecParser,viewSpecParser);
+publishTypeAlias(views,diff,viewSpecParser);
 
 } // namespace view_diff
 
