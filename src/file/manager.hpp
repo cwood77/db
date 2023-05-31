@@ -10,6 +10,7 @@ namespace file {
 
 class iFile;
 class iFileInStream;
+class iFileOutStream;
 
 class iFileManager {
 public:
@@ -57,9 +58,10 @@ public:
    }
 
    virtual iFileInStream& demandReadStream(const std::string& path) = 0;
+   virtual iFileOutStream& openWriteStream(const std::string& path) = 0;
 
    // used for mocking in testing
-   virtual void fakeReadStream(const std::string& path, std::istream& contents) = 0;
+   virtual void fakeStream(const std::string& path, std::iostream& contents) = 0;
 
    // implement close actions for any open files now
    virtual void flushAllOpen() = 0;
@@ -97,6 +99,14 @@ public:
    virtual void release() = 0;
 
    virtual std::istream& stream() = 0;
+};
+
+class iFileOutStream {
+public:
+   virtual ~iFileOutStream() {}
+   virtual void release() = 0;
+
+   virtual std::ostream& stream() = 0;
 };
 
 } // namespace file

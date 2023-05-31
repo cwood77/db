@@ -346,10 +346,12 @@ $(TEST_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 
 VIEWDIFF_SRC = \
 	src/view.diff/load.cpp \
+	src/view.diff/save.cpp \
 	src/view.diff/viewSpec.cpp \
 
 VIEWDIFF_TEST_SRC = \
 	src/view.diff/load.test.cpp \
+	src/view.diff/save.test.cpp \
 
 VIEWDIFF_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(VIEWDIFF_SRC)))
 

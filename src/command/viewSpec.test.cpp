@@ -46,6 +46,7 @@ testDefineTest(diff_viewSpec_parse_diffOkWithComments)
 
    a.assertTrue(pVs->type == "diff");
    a.assertTrue(!pVs->parserTypeName.empty());
+   a.assertTrue(!pVs->formatterTypeName.empty());
 }
 
 } // namespace anonymous

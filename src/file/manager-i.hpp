@@ -48,8 +48,8 @@ public:
    virtual void publish(const std::string& path, fileBase& inst) = 0;
    virtual void rescind(const std::string& path, fileBase& inst) = 0;
    virtual void flushAllOpen() = 0;
-   virtual void publishFakeStream(const std::string& path, std::istream& contents) = 0;
-   virtual std::istream *queryFakeStream(const std::string& path) = 0;
+   virtual void publishFakeStream(const std::string& path, std::iostream& contents) = 0;
+   virtual std::iostream *queryFakeStream(const std::string& path) = 0;
 };
 
 class masterFileList : public iMasterFileList {
@@ -58,12 +58,12 @@ public:
    virtual void publish(const std::string& path, fileBase& inst);
    virtual void rescind(const std::string& path, fileBase& inst);
    virtual void flushAllOpen();
-   virtual void publishFakeStream(const std::string& path, std::istream& contents);
-   virtual std::istream *queryFakeStream(const std::string& path);
+   virtual void publishFakeStream(const std::string& path, std::iostream& contents);
+   virtual std::iostream *queryFakeStream(const std::string& path);
 
 private:
    std::map<std::string,fileBase*> m_table;
-   std::map<std::string,std::istream*> m_fakeStreams;
+   std::map<std::string,std::iostream*> m_fakeStreams;
    std::set<std::string> m_unqueriedFakes;
 };
 
@@ -131,6 +131,28 @@ private:
    std::istream& m_s;
 };
 
+class realFileOutStream : public iFileOutStream {
+public:
+   explicit realFileOutStream(std::ostream& s) : m_s(&s) {}
+
+   virtual void release() { delete this; }
+   virtual std::ostream& stream() { return *m_s; }
+
+private:
+   std::unique_ptr<std::ostream> m_s;
+};
+
+class fakeFileOutStream : public iFileOutStream {
+public:
+   explicit fakeFileOutStream(std::ostream& s) : m_s(s) {}
+
+   virtual void release() { delete this; }
+   virtual std::ostream& stream() { return m_s; }
+
+private:
+   std::ostream& m_s;
+};
+
 class fileManager : public iFileManager {
 public:
    static std::string splitLast(const std::string& path);
@@ -150,7 +172,8 @@ public:
    virtual bool doesFileExist(const std::string& path) const;
 
    virtual iFileInStream& demandReadStream(const std::string& path);
-   virtual void fakeReadStream(const std::string& path, std::istream& contents);
+   virtual iFileOutStream& openWriteStream(const std::string& path);
+   virtual void fakeStream(const std::string& path, std::iostream& contents);
 
    virtual void flushAllOpen();
 

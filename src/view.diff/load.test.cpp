@@ -8,7 +8,6 @@
 #include "../file/manager.hpp"
 #include "../model/api.hpp"
 #include "../test/api.hpp"
-#include <memory>
 #include <sstream>
 
 namespace std {
@@ -45,14 +44,14 @@ testDefineTest(diff_view_load)
    viewSpecContents
       << "type: diff"
    ;
-   fMan->fakeReadStream("|dummy|.viewSpec",viewSpecContents);
+   fMan->fakeStream("|dummy|.viewSpec",viewSpecContents);
 
    std::stringstream viewContents;
    viewContents
       << "---------------------------" << std::endl
       << "a: b"
    ;
-   fMan->fakeReadStream("|dummy|",viewContents);
+   fMan->fakeStream("|dummy|",viewContents);
 
    model::model expected;
    expected.records.push_back(model::record());

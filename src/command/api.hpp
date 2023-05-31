@@ -82,6 +82,23 @@ private:
    model::view& m_out;
 };
 
+// --------------- save view
+class iSaveViewCommandImpl : public iCommandImpl {
+public:
+   virtual void configure(const std::string& path, model::view& v) = 0;
+};
+
+class saveViewCommand : public iCommand {
+public:
+   saveViewCommand(const std::string& path, model::view &v)
+   { m_pImpl->configure(path,v); }
+
+   virtual void queue(iProgram& p) { p.add(*m_pImpl); }
+
+private:
+   tcat::typePtr<iSaveViewCommandImpl> m_pImpl;
+};
+
 } // namespace cmd
 
 #endif // ___cmd_api___

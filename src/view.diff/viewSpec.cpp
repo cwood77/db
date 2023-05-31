@@ -3,6 +3,7 @@
 #include "../model/api.hpp"
 #include "../tcatlib/api.hpp"
 #include "load.hpp"
+#include "save.hpp"
 #include <memory>
 #include <windows.h>
 
@@ -27,6 +28,7 @@ public:
       std::unique_ptr<model::viewSpec> pVs(new model::viewSpec());
       pVs->type = "diff";
       pVs->parserTypeName = typeid(parser).name();
+      pVs->formatterTypeName = typeid(formatter).name();
       return *pVs.release();
    }
 

@@ -7,6 +7,12 @@ namespace model { class view; }
 
 namespace cmd {
 
+class iViewFormatter {
+public:
+   virtual ~iViewFormatter() {}
+   virtual void format(model::view& v, std::ostream& s) = 0;
+};
+
 class iViewParser {
 public:
    virtual ~iViewParser() {}

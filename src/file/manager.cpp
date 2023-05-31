@@ -144,13 +144,13 @@ void masterFileList::flushAllOpen()
       it->second->flush();
 }
 
-void masterFileList::publishFakeStream(const std::string& path, std::istream& contents)
+void masterFileList::publishFakeStream(const std::string& path, std::iostream& contents)
 {
    m_fakeStreams[path] = &contents;
    m_unqueriedFakes.insert(path);
 }
 
-std::istream *masterFileList::queryFakeStream(const std::string& path)
+std::iostream *masterFileList::queryFakeStream(const std::string& path)
 {
    auto it = m_fakeStreams.find(path);
    if(it == m_fakeStreams.end())
@@ -302,12 +302,27 @@ iFileInStream& fileManager::demandReadStream(const std::string& path)
    {
       std::unique_ptr<std::ifstream> in(new std::ifstream(path.c_str()));
       if(!in->good())
-         throw std::runtime_error(std::string("can't open file:") + path);
+         throw std::runtime_error(std::string("can't open file: ") + path);
       return *new realFileInStream(*in.release());
    }
 }
 
-void fileManager::fakeReadStream(const std::string& path, std::istream& contents)
+iFileOutStream& fileManager::openWriteStream(const std::string& path)
+{
+   tcat::typePtr<iMasterFileList> pMaster;
+   auto *pFake = pMaster->queryFakeStream(path);
+   if(pFake)
+      return *new fakeFileOutStream(*pFake);
+   else
+   {
+      std::unique_ptr<std::ofstream> out(new std::ofstream(path.c_str()));
+      if(!out->good())
+         throw std::runtime_error(std::string("can't open file: ") + path);
+      return *new realFileOutStream(*out.release());
+   }
+}
+
+void fileManager::fakeStream(const std::string& path, std::iostream& contents)
 {
    tcat::typePtr<iMasterFileList> pMaster;
    pMaster->publishFakeStream(path,contents);
