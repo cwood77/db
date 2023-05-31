@@ -7,6 +7,8 @@
 
 namespace model {
 
+class view;
+
 class record {
 public:
    std::map<std::string,std::string> fields;
@@ -17,9 +19,18 @@ public:
    std::list<record> records;
 };
 
+class iErrorReport {
+public:
+   virtual std::istream& create() = 0;
+};
+
 class iRule {
 public:
    virtual ~iRule() {}
+
+   virtual void unmap(view& v) = 0;
+   virtual void map(view& v) = 0;
+   virtual void check(view& v, iErrorReport& err) = 0;
 };
 
 class viewSpec {

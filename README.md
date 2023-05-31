@@ -70,3 +70,40 @@ view options (table)
 headingName=fieldName[maxWidth]
 ```
 NOTE: view options must be persistent so tables can be read!
+
+## Todo
+--core--
+[x] unmap command
+[x] map command
+
+--up rules--
+[ ] viewSpec: default<random>
+
+--core--
+[ ] check command
+
+--check rules--
+[ ] viewSpec: unique
+[ ] viewSpec: enum<a,b,c>
+
+--tedious; known--
+[ ] viewSpec: filter: <<RPN>>
+[ ] viewSpec: sort: a,-b,c
+[ ] viewSpec: cols: a,b,c
+
+--more of the same--
+[ ] top-level merge verb
+[ ] viewSpec: inherit
+[ ] viewSpec: checkbox field when value
+[ ] table view: viewSpec
+[ ] table view: load
+[ ] table view: save
+[ ] viewSpec: default
+[ ] viewSpec: default<now>
+
+--polish--
+[ ] top-level map verb
+
+--deferred--
+[ ] composite multi-view
+[ ] multiline strings?

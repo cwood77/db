@@ -62,4 +62,3 @@ tcatExposeTypeAs(saveViewCommandImpl,iSaveViewCommandImpl);
 
 } // anonymous namespace
 } // namespace cmd
-

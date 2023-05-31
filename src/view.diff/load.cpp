@@ -7,6 +7,8 @@ namespace view_diff {
 
 void parser::parse(model::view& v, std::istream& s)
 {
+   m_pView = &v;
+
    while(true)
    {
       if(!s.good())
@@ -17,11 +19,11 @@ void parser::parse(model::view& v, std::istream& s)
       if(line.empty())
          continue;
 
-      handleLine(v,line);
+      handleLine(line);
    }
 }
 
-void parser::handleLine(model::view& v, const std::string& line)
+void parser::handleLine(const std::string& line)
 {
    // comments
    const char *pThumb = line.c_str();
@@ -30,20 +32,15 @@ void parser::handleLine(model::view& v, const std::string& line)
       return;
 
    if(m_pCurrRec)
-      handleField(v,line);
+      handleField(line);
    else
-      handleGlobal(v,line);
+      handleGlobal(line);
 }
 
-void parser::handleField(model::view& v, const std::string& line)
+void parser::handleField(const std::string& line)
 {
-   auto N = measureRule(line);
-   if(N > 3)
-   {
-      v.model.records.push_back(model::record());
-      m_pCurrRec = &*(--v.model.records.end());
+   if(tryHandleRule(line))
       return;
-   }
 
    const char *pThumb = line.c_str();
    for(;*pThumb!=0&&*pThumb!=':';++pThumb);
@@ -61,16 +58,22 @@ void parser::handleField(model::view& v, const std::string& line)
    m_pCurrRec->fields[name] = value;
 }
 
-void parser::handleGlobal(model::view& v, const std::string& line)
+void parser::handleGlobal(const std::string& line)
+{
+   if(!tryHandleRule(line))
+      throw std::runtime_error(std::string("unrecognized line in view parse: ") + line);
+}
+
+bool parser::tryHandleRule(const std::string& line)
 {
    auto N = measureRule(line);
    if(N > 3)
    {
-      v.model.records.push_back(model::record());
-      m_pCurrRec = &*(--v.model.records.end());
+      m_pView->model.records.push_back(model::record());
+      m_pCurrRec = &*(--m_pView->model.records.end());
+      return true;
    }
-   else
-      throw std::runtime_error(std::string("unrecognized line in view parse: ") + line);
+   return false;
 }
 
 size_t parser::measureRule(const std::string& line)

@@ -82,6 +82,40 @@ private:
    model::view& m_out;
 };
 
+// --------------- unmap view
+class iUnmapViewCommandImpl : public iCommandImpl {
+public:
+   virtual void configure(model::view& v) = 0;
+};
+
+class unmapViewCommand : public iCommand {
+public:
+   explicit unmapViewCommand(model::view &v)
+   { m_pImpl->configure(v); }
+
+   virtual void queue(iProgram& p) { p.add(*m_pImpl); }
+
+private:
+   tcat::typePtr<iUnmapViewCommandImpl> m_pImpl;
+};
+
+// --------------- map view
+class iMapViewCommandImpl : public iCommandImpl {
+public:
+   virtual void configure(model::view& v) = 0;
+};
+
+class mapViewCommand : public iCommand {
+public:
+   explicit mapViewCommand(model::view &v)
+   { m_pImpl->configure(v); }
+
+   virtual void queue(iProgram& p) { p.add(*m_pImpl); }
+
+private:
+   tcat::typePtr<iMapViewCommandImpl> m_pImpl;
+};
+
 // --------------- save view
 class iSaveViewCommandImpl : public iCommandImpl {
 public:

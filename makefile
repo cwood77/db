@@ -103,6 +103,7 @@ $(TCATBIN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 # command
 
 COMMAND_SRC = \
+	src/command/mapunmap.cpp \
 	src/command/program.cpp \
 	src/command/saveload.cpp \
 	src/command/viewSpec.cpp \

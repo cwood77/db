@@ -14,7 +14,7 @@
 // default<random>: field                                  Y
 // default: field=value                                    Y
 // now: field=value                                        Y
-// on-modify: now: field=value                   Y
+// on-modify: now: field=value                   Y << CUT THIS! (or at least defer) >>
 // unique: field                        Y
 // enum<a,b,c>: field                   Y
 // checkbox field when value                               Y     Y

@@ -9,16 +9,18 @@ namespace view_diff {
 
 class parser : public cmd::iViewParser {
 public:
-   parser() : m_pCurrRec(NULL) {}
+   parser() : m_pView(NULL), m_pCurrRec(NULL) {}
 
    virtual void parse(model::view& v, std::istream& s);
 
 private:
-   void handleLine(model::view& v, const std::string& line);
-   void handleField(model::view& v, const std::string& line);
-   void handleGlobal(model::view& v, const std::string& line);
+   void handleLine(const std::string& line);
+   void handleField(const std::string& line);
+   void handleGlobal(const std::string& line);
+   bool tryHandleRule(const std::string& line);
    size_t measureRule(const std::string& line);
 
+   model::view *m_pView;
    model::record *m_pCurrRec;
 };
 
