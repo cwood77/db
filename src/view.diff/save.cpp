@@ -10,8 +10,8 @@ void formatter::format(model::view& v, std::ostream& s)
    {
       s << "---------------------------" << std::endl;
 
-      for(auto it=r.fields.begin();it!=r.fields.end();++it)
-         s << it->first << ": " << it->second << std::endl;
+      for(auto fname : v.pSpec->cols)
+         s << fname << ": " << r.fields[fname] << std::endl;
 
       s << std::endl;
    }

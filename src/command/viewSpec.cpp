@@ -25,14 +25,13 @@ public:
          auto fullTypeName = talias->demand("rules",alias);
          tcat::typePtr<cmd::iRuleFactory> pRFac(fullTypeName);
 
-         if(pColon[0] == ':')
-            pColon++;
+         if(pColon[0] == ':') pColon++;
          vs.rules.push_back(&pRFac->create(pColon));
-
-         return;
       }
-
-      throw std::runtime_error(std::string("unrecognized viewSpec line: ") + line);
+      else if(cmn::startsWithAndAdvance(pThumb,"cols: "))
+         cmn::splitCommaList(pThumb,vs.cols);
+      else
+         throw std::runtime_error(std::string("unrecognized viewSpec line: ") + line);
    }
 };
 

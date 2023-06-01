@@ -54,7 +54,7 @@ public:
    std::list<iRule*> rules;
    std::string filter;
    std::string sort;
-   std::string fields;
+   std::list<std::string> cols;
 
    std::string parserTypeName;
    std::string formatterTypeName;
