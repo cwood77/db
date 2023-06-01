@@ -95,12 +95,19 @@ void mapCommand::run(console::iLog& l)
 
    l.writeLnInfo("db " __DATE__ " " __TIME__);
 
-   tcat::typePtr<cmd::iProgram> pProg;
-
    model::view in;
 
+   tcat::typePtr<cmd::iProgram> pProg;
    pProg->add(*new cmd::loadViewCommand(oInputView,in));
+   pProg->add(*new cmd::unmapViewCommand(in));
    pProg->add(*new cmd::checkViewCommand(in));
+
+   delete in.pSpec;
+   pProg->add(*new cmd::parseViewSpecCommand(oOutputView + ".viewSpec",&in.pSpec));
+
+   pProg->add(*new cmd::checkViewCommand(in));
+   pProg->add(*new cmd::mapViewCommand(in));
+   pProg->add(*new cmd::saveViewCommand(oOutputView,in));
 
    pProg->execute();
 }

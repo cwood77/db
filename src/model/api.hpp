@@ -11,6 +11,15 @@ class view;
 
 class record {
 public:
+   std::string getIf(const std::string& name) const
+   {
+      auto it = fields.find(name);
+      if(it == fields.end())
+         return "";
+      else
+         return it->second;
+   }
+
    std::map<std::string,std::string> fields;
 };
 

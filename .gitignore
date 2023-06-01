@@ -1,2 +1,3 @@
 *.swp
 /bin/*
+testdata/booklist2.txt

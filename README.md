@@ -73,18 +73,18 @@ NOTE: view options must be persistent so tables can be read!
 
 ## Todo
 ---can add books---
+[x] viewSpec: sort: a,-b,c
+[x] top-level map verb
+[ ] viewSpec: cols: a,b,c
 [ ] top-level merge verb
-[ ] viewSpec: default
 [ ] viewSpec: default<now>
-[ ] viewSpec: sort: a,-b,c
 
 ---wait and see---
 [ ] table view: load
 [ ] table view: save
 [ ] table view: viewSpec
-[ ] top-level map verb
 [ ] viewSpec: checkbox field when value
-[ ] viewSpec: cols: a,b,c
+[ ] viewSpec: default
 [ ] viewSpec: default<random>
 [ ] viewSpec: filter: <<RPN>>
 [ ] viewSpec: inherit

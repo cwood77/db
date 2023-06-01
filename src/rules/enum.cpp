@@ -1,3 +1,4 @@
+#include "../cmn/string.hpp"
 #include "../cmn/talias.hpp"
 #include "../command/viewSpec.hpp"
 #include "../model/api.hpp"
@@ -44,19 +45,7 @@ public:
       std::string field(string.c_str(),pThumb-string.c_str());
       std::unique_ptr<enumRule> pRule(new enumRule(field));
 
-      while(true)
-      {
-         pThumb++;
-         const char *pStart = pThumb;
-         for(;*pThumb!=0&&*pThumb!=',';++pThumb);
-         if(pStart!=pThumb)
-         {
-            std::string word(pStart,pThumb-pStart);
-            pRule->legalWords.insert(word);
-         }
-         else
-            break;
-      }
+      cmn::splitCommaSet(++pThumb,pRule->legalWords);
 
       if(pRule->legalWords.size() == 0)
          throw std::runtime_error("no values are indicated in enum rule");

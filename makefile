@@ -320,6 +320,7 @@ $(PEN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 RULES_SRC = \
 	src/rules/default.cpp \
 	src/rules/enum.cpp \
+	src/rules/sort.cpp \
 	src/rules/unique.cpp \
 
 RULES_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(RULES_SRC)))

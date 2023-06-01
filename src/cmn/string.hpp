@@ -2,6 +2,9 @@
 #define ___cmn_string___
 
 #define WIN32_LEAN_AND_MEAN
+#include <functional>
+#include <list>
+#include <set>
 #include <string>
 #include <windows.h>
 
@@ -31,6 +34,33 @@ inline bool startsWithAndAdvance(parseThumbT& pThumb, const std::string& pattern
 inline void eatWhitespace(parseThumbT& pThumb)
 {
    for(;*pThumb==' ';++pThumb);
+}
+
+inline void splitCommaFunc(parseThumbT& pThumb, std::function<void(const std::string&)> f)
+{
+   while(true)
+   {
+      const char *pStart = pThumb;
+      for(;*pThumb!=0&&*pThumb!=',';++pThumb);
+      if(pStart!=pThumb)
+      {
+         std::string word(pStart,pThumb-pStart);
+         f(word);
+         pThumb++;
+      }
+      else
+         break;
+   }
+}
+
+inline void splitCommaSet(parseThumbT& pThumb, std::set<std::string>& words)
+{
+   splitCommaFunc(pThumb,[&](auto& w){ words.insert(w); });
+}
+
+inline void splitCommaList(parseThumbT& pThumb, std::list<std::string>& words)
+{
+   splitCommaFunc(pThumb,[&](auto& w){ words.push_back(w); });
 }
 
 } // namespace cmn
