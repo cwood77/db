@@ -17,8 +17,19 @@ public:
       const char *pThumb = line.c_str();
       if(cmn::startsWithAndAdvance(pThumb,"rule: "))
       {
+         const char *pColon = pThumb;
+         for(;*pColon!=0&&*pColon!=':';++pColon);
+         std::string alias(pThumb,pColon-pThumb);
+
          tcat::typePtr<cmn::typeAliasTable> talias;
-         talias->demand("rules",pThumb);
+         auto fullTypeName = talias->demand("rules",alias);
+         tcat::typePtr<cmd::iRuleFactory> pRFac(fullTypeName);
+
+         if(pColon[0] == ':')
+            pColon++;
+         vs.rules.push_back(&pRFac->create(pColon));
+
+         return;
       }
 
       throw std::runtime_error(std::string("unrecognized viewSpec line: ") + line);
@@ -67,10 +78,7 @@ private:
    {
       const char *pThumb = line.c_str();
       if(cmn::startsWithAndAdvance(pThumb,"type: "))
-      {
          matchSpecificParser(pThumb);
-         m_pSpec.reset(&(*m_pMatch)->createViewSpec());
-      }
       else
          throw std::runtime_error(std::string("unknown viewSpec line: ") + line);
    }
@@ -80,7 +88,7 @@ private:
       tcat::typePtr<cmn::typeAliasTable> talias;
       auto fullTypeName = talias->demand("views",type);
       m_pMatch.reset(new tcat::typePtr<iViewSpecParser>(fullTypeName));
-      return;
+      m_pSpec.reset(&(*m_pMatch)->createViewSpec());
    }
 
    std::unique_ptr<tcat::typePtr<iViewSpecParser> > m_pMatch;

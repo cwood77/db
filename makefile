@@ -15,6 +15,7 @@ all: \
 	$(OUT_DIR)/debug/exec.dll \
 	$(OUT_DIR)/debug/file.dll \
 	$(OUT_DIR)/debug/file.test.dll \
+	$(OUT_DIR)/debug/rules.dll \
 	$(OUT_DIR)/debug/tcatbin.dll \
 	$(OUT_DIR)/debug/test.exe \
 	$(OUT_DIR)/debug/view.diff.dll \
@@ -26,6 +27,7 @@ all: \
 	$(OUT_DIR)/release/exec.dll \
 	$(OUT_DIR)/release/file.dll \
 	$(OUT_DIR)/release/file.test.dll \
+	$(OUT_DIR)/release/rules.dll \
 	$(OUT_DIR)/release/tcatbin.dll \
 	$(OUT_DIR)/release/test.exe \
 	$(OUT_DIR)/release/view.diff.dll \
@@ -309,6 +311,36 @@ $(OUT_DIR)/release/pen.lib: $(PEN_RELEASE_OBJ)
 $(PEN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 	$(info $< --> $@)
 	@mkdir -p $(OBJ_DIR)/release/cui
+	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
+
+# ----------------------------------------------------------------------
+# rules
+
+RULES_SRC = \
+	src/rules/default.cpp \
+
+RULES_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(RULES_SRC)))
+
+$(OUT_DIR)/debug/rules.dll: $(RULES_DEBUG_OBJ) $(OUT_DIR)/debug/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/debug
+	@$(LINK_CMD) -shared -o $@ $(RULES_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib
+
+$(RULES_DEBUG_OBJ): $(OBJ_DIR)/debug/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/debug/rules
+	@$(COMPILE_CMD) $(DEBUG_CC_FLAGS) $< -o $@
+
+RULES_RELEASE_OBJ = $(subst src,$(OBJ_DIR)/release,$(patsubst %.cpp,%.o,$(RULES_SRC)))
+
+$(OUT_DIR)/release/rules.dll: $(RULES_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/release
+	@$(LINK_CMD) -shared -o $@ $(RULES_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib
+
+$(RULES_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/release/rules
 	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
 
 # ----------------------------------------------------------------------

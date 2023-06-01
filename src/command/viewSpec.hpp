@@ -3,9 +3,17 @@
 
 #include <iostream>
 
+namespace model { class iRule; }
 namespace model { class viewSpec; }
 
 namespace cmd {
+
+class iRuleFactory {
+public:
+   virtual ~iRuleFactory() {}
+
+   virtual model::iRule& create(const std::string& string) = 0;
+};
 
 class iViewSpecLineParser {
 public:
