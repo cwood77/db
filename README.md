@@ -72,38 +72,30 @@ headingName=fieldName[maxWidth]
 NOTE: view options must be persistent so tables can be read!
 
 ## Todo
---core--
-[x] unmap command
-[x] map command
-
---up rules--
-[ ] viewSpec: default<random>
-
---core--
-[ ] check command
-
---check rules--
-[ ] viewSpec: unique
-[ ] viewSpec: enum<a,b,c>
-
---tedious; known--
-[ ] viewSpec: filter: <<RPN>>
-[ ] viewSpec: sort: a,-b,c
-[ ] viewSpec: cols: a,b,c
-
---more of the same--
+---can add books---
 [ ] top-level merge verb
-[ ] viewSpec: inherit
-[ ] viewSpec: checkbox field when value
-[ ] table view: viewSpec
-[ ] table view: load
-[ ] table view: save
 [ ] viewSpec: default
 [ ] viewSpec: default<now>
+[ ] viewSpec: sort: a,-b,c
 
---polish--
+---wait and see---
+[ ] table view: load
+[ ] table view: save
+[ ] table view: viewSpec
 [ ] top-level map verb
+[ ] viewSpec: checkbox field when value
+[ ] viewSpec: cols: a,b,c
+[ ] viewSpec: default<random>
+[ ] viewSpec: filter: <<RPN>>
+[ ] viewSpec: inherit
 
---deferred--
+---deferred---
 [ ] composite multi-view
 [ ] multiline strings?
+
+---done---
+[x] check command
+[x] map command
+[x] unmap command
+[x] viewSpec: enum<a,b,c>
+[x] viewSpec: unique

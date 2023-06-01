@@ -116,6 +116,23 @@ private:
    tcat::typePtr<iMapViewCommandImpl> m_pImpl;
 };
 
+// --------------- check view
+class iCheckViewCommandImpl : public iCommandImpl {
+public:
+   virtual void configure(model::view& v) = 0;
+};
+
+class checkViewCommand : public iCommand {
+public:
+   explicit checkViewCommand(model::view &v)
+   { m_pImpl->configure(v); }
+
+   virtual void queue(iProgram& p) { p.add(*m_pImpl); }
+
+private:
+   tcat::typePtr<iCheckViewCommandImpl> m_pImpl;
+};
+
 // --------------- save view
 class iSaveViewCommandImpl : public iCommandImpl {
 public:

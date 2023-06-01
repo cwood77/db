@@ -1,0 +1,23 @@
+---------------------------
+title: A Kannada Grammar with Graduated Exercise
+author: Harold Spencer
+state: unread
+category: language
+
+---------------------------
+title: The Club Dumas
+author: Arturo Perez-Reverte
+state: in-work
+category: literature
+
+---------------------------
+title: Suicide of the West
+author: Koch
+state: unread
+category: sociology
+
+---------------------------
+title: Memories, Dreams, Reflections
+author: Jung
+state: unread
+category: psychology

@@ -100,6 +100,7 @@ void mapCommand::run(console::iLog& l)
    model::view in;
 
    pProg->add(*new cmd::loadViewCommand(oInputView,in));
+   pProg->add(*new cmd::checkViewCommand(in));
 
    pProg->execute();
 }

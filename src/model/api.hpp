@@ -21,16 +21,16 @@ public:
 
 class iErrorReport {
 public:
-   virtual std::istream& create() = 0;
+   virtual std::ostream& create() = 0;
 };
 
 class iRule {
 public:
    virtual ~iRule() {}
 
-   virtual void unmap(view& v) = 0;
-   virtual void map(view& v) = 0;
-   virtual void check(view& v, iErrorReport& err) = 0;
+   virtual void unmap(view& v) {}
+   virtual void map(view& v) {}
+   virtual void check(view& v, iErrorReport& err) {}
 };
 
 class viewSpec {
