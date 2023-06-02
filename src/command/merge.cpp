@@ -1,5 +1,6 @@
 #include "api.hpp"
 #include <functional>
+#include <stdexcept>
 
 namespace cmd {
 namespace {
@@ -10,43 +11,26 @@ public:
 
    virtual void execute()
    {
-      // ---merge and/or add
-      // sweep into records and build a map based on the key
-      // sweep in records and look for matches in the map
+      // ---merge existing records and add new ones
       compareEachRightToLeft(m_pInto->records,m_pView->model.records,
-      [&](auto *pInto, auto *pIn)
+      [&](auto *pInto, auto& in)
       {
-         if(pInto && pIn)
-         {
-            // if match
-            //    merge records with in winning
-            merge(*pInto,*pIn);
-         }
-         else if(pIn)
-         {
-            // if no match
-            //    add record
-            add(*pIn);
-         }
+         if(pInto)
+            // if both views have a record, merge it
+            merge(*pInto,in);
+         else
+            // if only in view has it, add it
+            add(in);
       });
 
-      return;
       // ---consider deleting some stuff
-      // sweep in recods and build a map based on the key
-      // sweep into records and look for matches in the map
       compareEachRightToLeft(m_pView->model.records,m_pInto->records,
-      [&](auto *pIn, auto *pInto)
+      [&](auto *pIn, auto& into)
       {
-         // if match
-         //    noop
-         if(!pIn && pInto)
-         {
-            // if no match
-            //    see if this record would pass the filter in in's spec
-            //       if so: delete this record from into
-            //       if not: noop
-            considerDelete(*pInto);
-         }
+         if(!pIn)
+            // if only the into (old) view has it, consider whether
+            // it's absence indicates a delete or not
+            considerDelete(into);
       });
    }
 
@@ -60,7 +44,7 @@ private:
    void compareEachRightToLeft(
       std::list<model::record>& lookup,
       std::list<model::record>& list,
-      std::function<void(model::record*,model::record*)> compare)
+      std::function<void(model::record*,model::record&)> compare)
    {
       // sweep lookup records and build a map based on the key
       std::map<std::string,model::record*> map;
@@ -80,7 +64,7 @@ private:
          if(it != map.end())
             pLhs = it->second;
 
-         compare(pLhs,&r);
+         compare(pLhs,r);
       }
    }
 
@@ -100,7 +84,25 @@ private:
 
    void considerDelete(model::record& r)
    {
-      // unimplemented
+      bool wouldBeInView = m_pView->pSpec->pFilter->isPass(r);
+      if(!wouldBeInView)
+         return;
+
+      // records that were in the view when it was mapped, but are no longer,
+      // were deleted by the user
+
+      auto markedForDeath = r.fields[m_pView->pSpec->keyField];
+      for(auto it=m_pInto->records.begin();it!=m_pInto->records.end();++it)
+      {
+         auto kvalue = it->fields[m_pView->pSpec->keyField];
+         if(markedForDeath == kvalue)
+         {
+            m_pInto->records.erase(it);
+            return;
+         }
+      }
+
+      throw std::runtime_error(std::string("ISE trying to delete record that should exist: " + markedForDeath));
    }
 
    model::view *m_pView;

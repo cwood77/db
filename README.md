@@ -72,24 +72,24 @@ headingName=fieldName[maxWidth]
 NOTE: view options must be persistent so tables can be read!
 
 ## Todo
----can add books---
-[x] viewSpec: sort: a,-b,c
-[x] top-level map verb
-[x] viewSpec: cols: a,b,c
-[ ] top-level merge verb
-[ ] viewSpec: default<now>
-
----wait and see---
+---for project mgmt---
 [ ] table view: load
 [ ] table view: save
 [ ] table view: viewSpec
 [ ] viewSpec: checkbox field when value
-[ ] viewSpec: default
-[ ] viewSpec: default<random>
-[ ] viewSpec: filter: <<RPN>>
+[ ] viewSpec: default<now>
+[ ] viewSpec: filter: <<RPN>> - done or not
 [ ] viewSpec: inherit
 
+---for booklist---
+
+---for gamelist---
+
+[ ] formula for impact?
+[ ] viewSpec: default
+
 ---deferred---
+[ ] viewSpec: default<random>
 [ ] composite multi-view
 [ ] multiline strings?
 
@@ -99,3 +99,8 @@ NOTE: view options must be persistent so tables can be read!
 [x] unmap command
 [x] viewSpec: enum<a,b,c>
 [x] viewSpec: unique
+[x] viewSpec: sort: a,-b,c
+[x] top-level map verb
+[x] viewSpec: cols: a,b,c
+[x] top-level merge verb
+[x] bug where merge occasionally adds garbage fields...?

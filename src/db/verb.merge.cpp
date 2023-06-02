@@ -33,9 +33,9 @@ protected:
          new console::verb<mergeCommand>("--merge"));
 
       v->addParameter(
-         console::stringParameter::required(offsetof(mergeCommand,oInputView)));
-      v->addParameter(
          console::stringParameter::required(offsetof(mergeCommand,oIntoView)));
+      v->addParameter(
+         console::stringParameter::required(offsetof(mergeCommand,oInputView)));
       v->addParameter(
          console::stringParameter::optional(offsetof(mergeCommand,oOutputView)));
 

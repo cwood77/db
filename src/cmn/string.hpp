@@ -46,7 +46,8 @@ inline void splitCommaFunc(parseThumbT& pThumb, std::function<void(const std::st
       {
          std::string word(pStart,pThumb-pStart);
          f(word);
-         pThumb++;
+         if(*pThumb==',')
+            pThumb++;
       }
       else
          break;
