@@ -42,7 +42,8 @@ testDefineTest(diff_view_load)
 
    std::stringstream viewSpecContents;
    viewSpecContents
-      << "type: diff"
+      << "type: diff" << std::endl
+      << "key: a" << std::endl
    ;
    fMan->fakeStream("|dummy|.viewSpec",viewSpecContents);
 

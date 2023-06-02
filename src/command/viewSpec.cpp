@@ -30,6 +30,8 @@ public:
       }
       else if(cmn::startsWithAndAdvance(pThumb,"cols: "))
          cmn::splitCommaList(pThumb,vs.cols);
+      else if(cmn::startsWithAndAdvance(pThumb,"key: "))
+         vs.keyField = pThumb;
       else
          throw std::runtime_error(std::string("unrecognized viewSpec line: ") + line);
    }
@@ -54,6 +56,12 @@ public:
 
       if(!m_pSpec.get() || m_pSpec->type.empty())
          throw std::runtime_error("viewSpec indicates no type?");
+
+      if(!m_pSpec->pFilter)
+         throw std::runtime_error("viewSpec indicates no filter?");
+
+      if(m_pSpec->keyField.empty())
+         throw std::runtime_error("viewSpec indicates no key?");
 
       return *m_pSpec.release();
    }

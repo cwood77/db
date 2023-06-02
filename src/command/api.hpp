@@ -133,6 +133,23 @@ private:
    tcat::typePtr<iCheckViewCommandImpl> m_pImpl;
 };
 
+// --------------- merge view
+class iMergeViewCommandImpl : public iCommandImpl {
+public:
+   virtual void configure(model::view& v, model::model& into) = 0;
+};
+
+class mergeViewCommand : public iCommand {
+public:
+   explicit mergeViewCommand(model::view &in, model::model& into)
+   { m_pImpl->configure(in,into); }
+
+   virtual void queue(iProgram& p) { p.add(*m_pImpl); }
+
+private:
+   tcat::typePtr<iMergeViewCommandImpl> m_pImpl;
+};
+
 // --------------- save view
 class iSaveViewCommandImpl : public iCommandImpl {
 public:

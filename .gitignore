@@ -1,3 +1,4 @@
 *.swp
 /bin/*
 testdata/booklist2.txt
+testdata/merge-out.txt

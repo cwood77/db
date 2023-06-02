@@ -42,19 +42,30 @@ public:
    virtual void check(view& v, iErrorReport& err) {}
 };
 
+class iFilter {
+public:
+   virtual ~iFilter() {}
+
+   virtual bool isPass(const record& r) const = 0;
+};
+
 class viewSpec {
 public:
+   viewSpec() : pFilter(NULL) {}
+
    virtual ~viewSpec()
    {
       for(auto *pRule : rules)
          delete pRule;
+      delete pFilter;
    }
 
    std::string type;
    std::list<iRule*> rules;
-   std::string filter;
-   std::string sort;
+   iFilter *pFilter;
    std::list<std::string> cols;
+
+   std::string keyField;
 
    std::string parserTypeName;
    std::string formatterTypeName;
@@ -69,6 +80,17 @@ public:
    model model;
 };
 
+// ============================= filter nodes =============================
+// ========================================================================
+
+namespace filter {
+
+class always : public iFilter {
+public:
+   virtual bool isPass(const record& r) const { return true; }
+};
+
+} // namespace filter
 } // namespace model
 
 #endif // ___model_api___

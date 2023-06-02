@@ -107,6 +107,7 @@ $(TCATBIN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 COMMAND_SRC = \
 	src/command/check.cpp \
 	src/command/mapunmap.cpp \
+	src/command/merge.cpp \
 	src/command/program.cpp \
 	src/command/saveload.cpp \
 	src/command/viewSpec.cpp \
@@ -444,6 +445,7 @@ $(VIEWDIFF_TEST_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 DB_SRC = \
 	src/db/main.cpp \
 	src/db/verb.map.cpp \
+	src/db/verb.merge.cpp \
 
 DB_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(DB_SRC)))
 

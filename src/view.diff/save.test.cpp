@@ -26,6 +26,7 @@ testDefineTest(diff_view_save)
    model::view v;
    v.pSpec = new model::viewSpec();
    v.pSpec->type = "diff";
+   v.pSpec->cols.push_back("a");
    v.pSpec->formatterTypeName = typeid(view_diff::formatter).name();
    v.model.records.push_back(model::record());
    auto& r = *(--v.model.records.end());

@@ -39,6 +39,8 @@ testDefineTest(diff_viewSpec_parse_diffOkWithComments)
       << "type: diff" << std::endl
       << "   # this one three" << std::endl
       << std::endl
+      << "key: a" << std::endl
+      << std::endl
    ;
 
    tcat::typePtr<cmd::iTopViewSpecParser> pParser;

@@ -75,7 +75,7 @@ NOTE: view options must be persistent so tables can be read!
 ---can add books---
 [x] viewSpec: sort: a,-b,c
 [x] top-level map verb
-[ ] viewSpec: cols: a,b,c
+[x] viewSpec: cols: a,b,c
 [ ] top-level merge verb
 [ ] viewSpec: default<now>
 

@@ -26,6 +26,7 @@ public:
    {
       std::unique_ptr<model::viewSpec> pVs(new model::viewSpec());
       pVs->type = "diff";
+      pVs->pFilter = new model::filter::always();
       pVs->parserTypeName = typeid(parser).name();
       pVs->formatterTypeName = typeid(formatter).name();
       return *pVs.release();
