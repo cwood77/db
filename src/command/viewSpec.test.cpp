@@ -3,6 +3,7 @@
 #include <windows.h>
 
 #ifdef cdwTest
+#include "../file/manager.hpp"
 #include "../model/api.hpp"
 #include "../test/api.hpp"
 #include "viewSpec.hpp"
@@ -13,13 +14,15 @@ namespace {
 
 testDefineTest(diff_viewSpec_parse_emptyThrows)
 {
-   std::stringstream in;
+   tcat::typePtr<file::iFileManager> fMan;
+   std::stringstream viewSpecContents;
+   fMan->fakeStream("|dummy|.viewSpec",viewSpecContents);
 
    bool threw = false;
    try
    {
       tcat::typePtr<cmd::iTopViewSpecParser> pParser;
-      std::unique_ptr<model::viewSpec> pVs(&pParser->parse(in));
+      std::unique_ptr<model::viewSpec> pVs(&pParser->parse("|dummy|.viewSpec"));
    }
    catch(std::exception&)
    {
@@ -30,8 +33,9 @@ testDefineTest(diff_viewSpec_parse_emptyThrows)
 
 testDefineTest(diff_viewSpec_parse_diffOkWithComments)
 {
-   std::stringstream in;
-   in
+   tcat::typePtr<file::iFileManager> fMan;
+   std::stringstream viewSpecContents;
+   viewSpecContents
       << "# this line is discarded as a comment" << std::endl
       << "   # this one too" << std::endl
       << std::endl
@@ -42,9 +46,10 @@ testDefineTest(diff_viewSpec_parse_diffOkWithComments)
       << "key: a" << std::endl
       << std::endl
    ;
+   fMan->fakeStream("|dummy|.viewSpec",viewSpecContents);
 
    tcat::typePtr<cmd::iTopViewSpecParser> pParser;
-   std::unique_ptr<model::viewSpec> pVs(&pParser->parse(in));
+   std::unique_ptr<model::viewSpec> pVs(&pParser->parse("|dummy|.viewSpec"));
 
    a.assertTrue(pVs->type == "diff");
    a.assertTrue(!pVs->parserTypeName.empty());

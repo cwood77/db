@@ -1,10 +1,2 @@
 type: diff
-rule: unique:title
-#rule: default:author=
-rule: enum:state=unread,in-work
-#rule: default:state=unread
-#rule: default<today>:date-added
-#sort: title,author
-rule: enum:category=language,literature,sociology,psychology,rubbish
-key: title
-cols: title,author,state,category
+inherit: booklist.coreSpec

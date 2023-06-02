@@ -73,13 +73,13 @@ NOTE: view options must be persistent so tables can be read!
 
 ## Todo
 ---for project mgmt---
+[ ] viewSpec: inherit
 [ ] table view: load
 [ ] table view: save
 [ ] table view: viewSpec
 [ ] viewSpec: checkbox field when value
-[ ] viewSpec: default<now>
 [ ] viewSpec: filter: <<RPN>> - done or not
-[ ] viewSpec: inherit
+[ ] viewSpec: default<now>
 
 ---for booklist---
 
@@ -94,13 +94,13 @@ NOTE: view options must be persistent so tables can be read!
 [ ] multiline strings?
 
 ---done---
+[x] bug where merge occasionally adds garbage fields...?
 [x] check command
 [x] map command
-[x] unmap command
-[x] viewSpec: enum<a,b,c>
-[x] viewSpec: unique
-[x] viewSpec: sort: a,-b,c
 [x] top-level map verb
-[x] viewSpec: cols: a,b,c
 [x] top-level merge verb
-[x] bug where merge occasionally adds garbage fields...?
+[x] unmap command
+[x] viewSpec: cols: a,b,c
+[x] viewSpec: enum<a,b,c>
+[x] viewSpec: sort: a,-b,c
+[x] viewSpec: unique

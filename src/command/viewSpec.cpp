@@ -39,20 +39,9 @@ public:
 
 class topViewSpecParser : public iTopViewSpecParser {
 public:
-   virtual model::viewSpec& parse(std::istream& s)
+   virtual model::viewSpec& parse(const std::string& filePath)
    {
-      while(true)
-      {
-         if(!s.good())
-            break;
-
-         std::string line;
-         std::getline(s,line);
-         if(line.empty())
-            continue;
-
-         handleLine(line);
-      }
+      handleFile(filePath);
 
       if(!m_pSpec.get() || m_pSpec->type.empty())
          throw std::runtime_error("viewSpec indicates no type?");
@@ -67,6 +56,32 @@ public:
    }
 
 private:
+   void handleFile(const std::string& path)
+   {
+      std::string adjustedPath = path;
+      if(!m_filePath.empty())
+         adjustedPath = m_filePath + "\\..\\" + path;
+      else
+         m_filePath = path;
+
+      tcat::typePtr<file::iFileManager> fMan;
+      cmn::autoReleasePtr<file::iFileInStream> fStream(&fMan->demandReadStream(adjustedPath));
+      auto& s = fStream->stream();
+
+      while(true)
+      {
+         if(!s.good())
+            break;
+
+         std::string line;
+         std::getline(s,line);
+         if(line.empty())
+            continue;
+
+         handleLine(line);
+      }
+   }
+
    void handleLine(const std::string& line)
    {
       // comments
@@ -74,6 +89,14 @@ private:
       cmn::eatWhitespace(pThumb);
       if(*pThumb == '#')
          return;
+
+      // inherit
+      if(cmn::startsWithAndAdvance(pThumb,"inherit: "))
+      {
+         std::string path = pThumb;
+         handleFile(path);
+         return;
+      }
 
       if(m_pMatch)
          (*m_pMatch)->parse(*m_pSpec,line);
@@ -98,6 +121,7 @@ private:
       m_pSpec.reset(&(*m_pMatch)->createViewSpec());
    }
 
+   std::string m_filePath;
    std::unique_ptr<tcat::typePtr<iViewSpecParser> > m_pMatch;
    std::unique_ptr<model::viewSpec> m_pSpec;
 };
@@ -108,11 +132,8 @@ public:
 
    virtual void execute()
    {
-      tcat::typePtr<file::iFileManager> fMan;
-      cmn::autoReleasePtr<file::iFileInStream> fStream(&fMan->demandReadStream(m_path));
-
       tcat::typePtr<iTopViewSpecParser> pParser;
-      *m_ppSpec = &pParser->parse(fStream->stream());
+      *m_ppSpec = &pParser->parse(m_path);
    }
 
    virtual void configure(const std::string& path, model::viewSpec **ppSpec)

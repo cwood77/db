@@ -1,0 +1,10 @@
+key: title
+cols: title,author,state,category
+
+rule: unique:title
+rule: enum:state=unread,in-work
+rule: enum:category=language,literature,sociology,psychology,rubbish
+
+#rule: default:author=
+#rule: default:state=unread
+#rule: default<today>:date-added

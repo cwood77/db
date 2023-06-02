@@ -31,7 +31,7 @@ class iCommonViewSpecParser : public iViewSpecLineParser {};
 class iTopViewSpecParser {
 public:
    virtual ~iTopViewSpecParser() {}
-   virtual model::viewSpec& parse(std::istream& s) = 0;
+   virtual model::viewSpec& parse(const std::string& filePath) = 0;
 };
 
 } // namespace cmd
