@@ -1,9 +1,11 @@
 key: title
-cols: title,author,state,category
 
 rule: unique:title
-rule: enum:state=unread,in-work
-rule: enum:category=language,literature,sociology,psychology,rubbish
+rule: enum:state=???,unread,in-work
+rule: enum:category=???,language,literature,sociology,psychology,rubbish,egyptology
+
+rule: default:state=???
+rule: default:category=???
 
 #rule: default:author=
 #rule: default:state=unread

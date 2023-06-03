@@ -6,6 +6,7 @@
 #include <list>
 #include <set>
 #include <string>
+#include <vector>
 #include <windows.h>
 
 namespace cmn {
@@ -36,17 +37,17 @@ inline void eatWhitespace(parseThumbT& pThumb)
    for(;*pThumb==' ';++pThumb);
 }
 
-inline void splitCommaFunc(parseThumbT& pThumb, std::function<void(const std::string&)> f)
+inline void splitDelimFunc(parseThumbT& pThumb, char delim, std::function<void(const std::string&)> f)
 {
    while(true)
    {
       const char *pStart = pThumb;
-      for(;*pThumb!=0&&*pThumb!=',';++pThumb);
+      for(;*pThumb!=0&&*pThumb!=delim;++pThumb);
       if(pStart!=pThumb)
       {
          std::string word(pStart,pThumb-pStart);
          f(word);
-         if(*pThumb==',')
+         if(*pThumb==delim)
             pThumb++;
       }
       else
@@ -56,12 +57,17 @@ inline void splitCommaFunc(parseThumbT& pThumb, std::function<void(const std::st
 
 inline void splitCommaSet(parseThumbT& pThumb, std::set<std::string>& words)
 {
-   splitCommaFunc(pThumb,[&](auto& w){ words.insert(w); });
+   splitDelimFunc(pThumb,',',[&](auto& w){ words.insert(w); });
 }
 
 inline void splitCommaList(parseThumbT& pThumb, std::list<std::string>& words)
 {
-   splitCommaFunc(pThumb,[&](auto& w){ words.push_back(w); });
+   splitDelimFunc(pThumb,',',[&](auto& w){ words.push_back(w); });
+}
+
+inline void splitDelimVector(parseThumbT& pThumb, char delim, std::vector<std::string>& words)
+{
+   splitDelimFunc(pThumb,delim,[&](auto& w){ words.push_back(w); });
 }
 
 } // namespace cmn

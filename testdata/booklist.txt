@@ -1,23 +1,56 @@
 ---------------------------
 title: A Kannada Grammar with Graduated Exercise
 author: Harold Spencer
+notes: 
 state: unread
 category: language
 
 ---------------------------
 title: The Club Dumas
 author: Arturo Perez-Reverte
+notes: 
 state: in-work
 category: literature
 
 ---------------------------
 title: Suicide of the West
 author: Koch
+notes: 
 state: unread
 category: sociology
 
 ---------------------------
 title: Memories, Dreams, Reflections
 author: Jung
+notes: 
 state: unread
 category: psychology
+
+---------------------------
+title: Tutankhamun
+author: 
+notes: Reader's digest book
+state: unread
+category: egyptology
+
+---------------------------
+title: Barnes & Noble Hamlet
+author: 
+notes: 
+state: unread
+category: literature
+
+---------------------------
+title: Barnes & Noble Macbeth
+author: 
+notes: 
+state: unread
+category: literature
+
+---------------------------
+title: Ancient Egypt
+author: 
+notes: Big-ass coffee table book
+state: ???
+category: ???
+

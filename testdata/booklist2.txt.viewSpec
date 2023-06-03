@@ -1,3 +1,4 @@
 type: diff
 inherit: booklist.coreSpec
-rule: sort:title
+rule: sort:category,title
+cols: title,state,category

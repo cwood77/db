@@ -73,20 +73,20 @@ NOTE: view options must be persistent so tables can be read!
 
 ## Todo
 ---for project mgmt---
-[ ] viewSpec: inherit
 [ ] table view: load
 [ ] table view: save
 [ ] table view: viewSpec
 [ ] viewSpec: checkbox field when value
-[ ] viewSpec: filter: <<RPN>> - done or not
+[ ] viewSpec: filter: <<RPN>> - done or not, unass
 [ ] viewSpec: default<now>
 
 ---for booklist---
+[ ] viewSpec: default
+[ ] viewSpec: filter: <<RPN>> - unassigned categories
 
 ---for gamelist---
 
 [ ] formula for impact?
-[ ] viewSpec: default
 
 ---deferred---
 [ ] viewSpec: default<random>
@@ -102,5 +102,6 @@ NOTE: view options must be persistent so tables can be read!
 [x] unmap command
 [x] viewSpec: cols: a,b,c
 [x] viewSpec: enum<a,b,c>
+[x] viewSpec: inherit
 [x] viewSpec: sort: a,-b,c
 [x] viewSpec: unique

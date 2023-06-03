@@ -1,2 +1,3 @@
 type: diff
 inherit: booklist.coreSpec
+cols: title,author,notes,state,category
