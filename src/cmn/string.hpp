@@ -5,6 +5,7 @@
 #include <functional>
 #include <list>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include <windows.h>
@@ -35,6 +36,13 @@ inline bool startsWithAndAdvance(parseThumbT& pThumb, const std::string& pattern
 inline void eatWhitespace(parseThumbT& pThumb)
 {
    for(;*pThumb==' ';++pThumb);
+}
+
+inline void eatUntil(parseThumbT& pThumb, char delim)
+{
+   for(;*pThumb!=0&&*pThumb!=delim;++pThumb);
+   if(*pThumb!=delim)
+      throw std::runtime_error("parse failed to find delimiter");
 }
 
 inline void splitDelimFunc(parseThumbT& pThumb, char delim, std::function<void(const std::string&)> f)

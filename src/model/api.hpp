@@ -1,8 +1,10 @@
 #ifndef ___model_api___
 #define ___model_api___
 
+#include "../tcatlib/api.hpp"
 #include <list>
 #include <map>
+#include <stdexcept>
 #include <string>
 
 namespace model {
@@ -83,6 +85,25 @@ public:
 // ============================= filter nodes =============================
 // ========================================================================
 
+class iFilterStack {
+public:
+   virtual ~iFilterStack() {}
+   virtual std::string popString() = 0;
+   virtual void pushString(const std::string& v) = 0;
+
+   virtual bool popBool() = 0;
+   virtual void pushBool(bool v) = 0;
+
+   virtual size_t getDepth() const = 0;
+};
+
+class iFilterNode {
+public:
+   virtual ~iFilterNode() {}
+
+   virtual void evaluate(const record& r, iFilterStack& s) const = 0;
+};
+
 namespace filter {
 
 class always : public iFilter {
@@ -90,7 +111,27 @@ public:
    virtual bool isPass(const record& r) const { return true; }
 };
 
+class when : public iFilter {
+public:
+   explicit when(iFilterNode& root) : m_pRoot(&root) {}
+   virtual ~when() { delete m_pRoot; }
+
+   virtual bool isPass(const record& r) const
+   {
+      tcat::typePtr<iFilterStack> stack;
+      m_pRoot->evaluate(r,*stack);
+      bool isPass = stack->popBool();
+      if(stack->getDepth() != 0)
+         throw std::runtime_error("filter evaluation failed to reach stack depth of unity");
+      return isPass;
+   }
+
+private:
+   iFilterNode *m_pRoot;
+};
+
 } // namespace filter
+
 } // namespace model
 
 #endif // ___model_api___

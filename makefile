@@ -15,6 +15,7 @@ all: \
 	$(OUT_DIR)/debug/exec.dll \
 	$(OUT_DIR)/debug/file.dll \
 	$(OUT_DIR)/debug/file.test.dll \
+	$(OUT_DIR)/debug/filter.dll \
 	$(OUT_DIR)/debug/rules.dll \
 	$(OUT_DIR)/debug/tcatbin.dll \
 	$(OUT_DIR)/debug/test.exe \
@@ -27,6 +28,7 @@ all: \
 	$(OUT_DIR)/release/exec.dll \
 	$(OUT_DIR)/release/file.dll \
 	$(OUT_DIR)/release/file.test.dll \
+	$(OUT_DIR)/release/filter.dll \
 	$(OUT_DIR)/release/rules.dll \
 	$(OUT_DIR)/release/tcatbin.dll \
 	$(OUT_DIR)/release/test.exe \
@@ -313,6 +315,39 @@ $(OUT_DIR)/release/pen.lib: $(PEN_RELEASE_OBJ)
 $(PEN_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 	$(info $< --> $@)
 	@mkdir -p $(OBJ_DIR)/release/cui
+	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
+
+# ----------------------------------------------------------------------
+# filter
+
+FILTER_SRC = \
+	src/filter/expert.cpp \
+	src/filter/nodes.cpp \
+	src/filter/parser.cpp \
+	src/filter/parser.test.cpp \
+
+FILTER_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(FILTER_SRC)))
+
+$(OUT_DIR)/debug/filter.dll: $(FILTER_DEBUG_OBJ) $(OUT_DIR)/debug/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/debug
+	@$(LINK_CMD) -shared -o $@ $(FILTER_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib
+
+$(FILTER_DEBUG_OBJ): $(OBJ_DIR)/debug/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/debug/filter
+	@$(COMPILE_CMD) $(DEBUG_CC_FLAGS) $< -o $@
+
+FILTER_RELEASE_OBJ = $(subst src,$(OBJ_DIR)/release,$(patsubst %.cpp,%.o,$(FILTER_SRC)))
+
+$(OUT_DIR)/release/filter.dll: $(FILTER_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
+	$(info $< --> $@)
+	@mkdir -p $(OUT_DIR)/release
+	@$(LINK_CMD) -shared -o $@ $(FILTER_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib
+
+$(FILTER_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
+	$(info $< --> $@)
+	@mkdir -p $(OBJ_DIR)/release/filter
 	@$(COMPILE_CMD) $(RELEASE_CC_FLAGS) $< -o $@
 
 # ----------------------------------------------------------------------

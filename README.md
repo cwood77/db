@@ -81,7 +81,6 @@ NOTE: view options must be persistent so tables can be read!
 [ ] viewSpec: default<now>
 
 ---for booklist---
-[ ] viewSpec: default
 [ ] viewSpec: filter: <<RPN>> - unassigned categories
 
 ---for gamelist---
@@ -101,7 +100,20 @@ NOTE: view options must be persistent so tables can be read!
 [x] top-level merge verb
 [x] unmap command
 [x] viewSpec: cols: a,b,c
+[x] viewSpec: default
 [x] viewSpec: enum<a,b,c>
 [x] viewSpec: inherit
 [x] viewSpec: sort: a,-b,c
 [x] viewSpec: unique
+
+### Filter syntax
+```
+filter: <word>
+```
+where `<word>` is:
+- a comparison operator (`==`)
+- a literal (`"quoted string`)
+- a field (`.prefixedWithDot`)
+- a logical operator (`&&`)
+
+Thus words are delimited by spaces or quotes.

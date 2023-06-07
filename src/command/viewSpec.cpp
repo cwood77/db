@@ -2,6 +2,7 @@
 #include "../cmn/string.hpp"
 #include "../cmn/talias.hpp"
 #include "../file/manager.hpp"
+#include "../filter/api.hpp"
 #include "api.hpp"
 #include "viewSpec.hpp"
 #include <fstream>
@@ -27,6 +28,11 @@ public:
 
          if(pColon[0] == ':') pColon++;
          vs.rules.push_back(&pRFac->create(pColon));
+      }
+      else if(cmn::startsWithAndAdvance(pThumb,"filter: "))
+      {
+         tcat::typePtr<filter::iExpert> fEx;
+         fEx->configure(vs,pThumb);
       }
       else if(cmn::startsWithAndAdvance(pThumb,"cols: "))
          cmn::splitCommaList(pThumb,vs.cols);
