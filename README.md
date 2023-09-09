@@ -77,15 +77,14 @@ NOTE: view options must be persistent so tables can be read!
 [ ] table view: save
 [ ] table view: viewSpec
 [ ] viewSpec: checkbox field when value
-[ ] viewSpec: filter: <<RPN>> - done or not, unass
+[ ] viewSpec: default<now>
+[ ] formula for impact?
+
+---booklist---
 [ ] viewSpec: default<now>
 
----for booklist---
-[ ] viewSpec: filter: <<RPN>> - unassigned categories
-
----for gamelist---
-
-[ ] formula for impact?
+---gamelist---
+[ ] viewSpec: default<now>
 
 ---deferred---
 [ ] viewSpec: default<random>
@@ -102,6 +101,7 @@ NOTE: view options must be persistent so tables can be read!
 [x] viewSpec: cols: a,b,c
 [x] viewSpec: default
 [x] viewSpec: enum<a,b,c>
+[x] viewSpec: filter: <<RPN>>
 [x] viewSpec: inherit
 [x] viewSpec: sort: a,-b,c
 [x] viewSpec: unique
