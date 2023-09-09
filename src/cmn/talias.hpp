@@ -36,14 +36,19 @@ private:
    std::string m_value;
 };
 
-// args unquoted
-#define publishTypeAlias(__cat__,__alias__,__type__) \
-   class __alias__##typeAliasProvider : public cmn::typeAliasProvider<__type__> { \
+// all args are unquoted
+//
+// use this is if alias is illegal C++
+#define publishTypeAliasComplex(__cat__,__simplifiedAlias__,__alias__,__type__) \
+   class __simplifiedAlias__##typeAliasProvider : public cmn::typeAliasProvider<__type__> { \
    public: \
-      __alias__##typeAliasProvider() \
+      __simplifiedAlias__##typeAliasProvider() \
       : cmn::typeAliasProvider<__type__>(#__cat__,#__alias__) {} \
    }; \
-   tcatExposeTypeAs(__alias__##typeAliasProvider,cmn::iTypeAliasProvider)
+   tcatExposeTypeAs(__simplifiedAlias__##typeAliasProvider,cmn::iTypeAliasProvider)
+// generally prefer this macro
+#define publishTypeAlias(__cat__,__alias__,__type__) \
+   publishTypeAliasComplex(__cat__,__alias__,__alias__,__type__)
 
 class typeAliasTable {
 public:

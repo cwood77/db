@@ -2,6 +2,7 @@
 #include "../model/api.hpp"
 #include "../tcatlib/api.hpp"
 #include "load.hpp"
+#include <sstream>
 
 namespace view_diff {
 
@@ -31,10 +32,26 @@ void parser::handleLine(const std::string& line)
    if(*pThumb == '#')
       return;
 
-   if(m_pCurrRec)
+   if(!m_currField.empty())
+      handleMultilineField(line);
+   else if(m_pCurrRec)
       handleField(line);
    else
       handleGlobal(line);
+}
+
+void parser::handleMultilineField(const std::string& line)
+{
+   if(line == ">")
+   {
+      m_currField.clear();
+      return;
+   }
+
+   auto& f = m_pCurrRec->fields[m_currField];
+   std::stringstream s;
+   s << f << std::endl << line;
+   f = s.str();
 }
 
 void parser::handleField(const std::string& line)
@@ -42,12 +59,15 @@ void parser::handleField(const std::string& line)
    if(tryHandleRule(line))
       return;
 
+   bool isMultiline = false;
    const char *pThumb = line.c_str();
    for(;*pThumb!=0&&*pThumb!=':';++pThumb);
    if(*pThumb==0)
       throw std::runtime_error(std::string("failed to split string during view parse: ") + line);
 
-   if(pThumb[1] != ' ')
+   if(pThumb[1] == '<')
+      isMultiline = true;
+   else if(pThumb[1] != ' ')
       throw std::runtime_error(std::string("unknown field syntax during view parse: ") + line);
 
    std::string name(line.c_str(),pThumb-line.c_str());
@@ -56,6 +76,8 @@ void parser::handleField(const std::string& line)
       throw std::runtime_error(std::string("duplicate field on view parse line: ") + line);
 
    m_pCurrRec->fields[name] = value;
+   if(isMultiline)
+      m_currField = name;
 }
 
 void parser::handleGlobal(const std::string& line)

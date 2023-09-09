@@ -15,6 +15,7 @@ public:
 
 private:
    void handleLine(const std::string& line);
+   void handleMultilineField(const std::string& line);
    void handleField(const std::string& line);
    void handleGlobal(const std::string& line);
    bool tryHandleRule(const std::string& line);
@@ -22,6 +23,7 @@ private:
 
    model::view *m_pView;
    model::record *m_pCurrRec;
+   std::string m_currField;
 };
 
 } // namespace view_diff

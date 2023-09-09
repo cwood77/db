@@ -72,6 +72,10 @@ headingName=fieldName[maxWidth]
 NOTE: view options must be persistent so tables can be read!
 
 ## Todo
+---for project mgmt(mvp)---
+[x] viewSpec: default<random>
+[x] multiline strings
+
 ---for project mgmt---
 [ ] table view: load
 [ ] table view: save
@@ -89,7 +93,6 @@ NOTE: view options must be persistent so tables can be read!
 ---deferred---
 [ ] viewSpec: default<random>
 [ ] composite multi-view
-[ ] multiline strings?
 
 ---done---
 [x] bug where merge occasionally adds garbage fields...?

@@ -356,6 +356,7 @@ $(FILTER_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 RULES_SRC = \
 	src/rules/default.cpp \
 	src/rules/enum.cpp \
+	src/rules/guid.cpp \
 	src/rules/sort.cpp \
 	src/rules/unique.cpp \
 
@@ -364,7 +365,7 @@ RULES_DEBUG_OBJ = $(subst src,$(OBJ_DIR)/debug,$(patsubst %.cpp,%.o,$(RULES_SRC)
 $(OUT_DIR)/debug/rules.dll: $(RULES_DEBUG_OBJ) $(OUT_DIR)/debug/tcatlib.lib
 	$(info $< --> $@)
 	@mkdir -p $(OUT_DIR)/debug
-	@$(LINK_CMD) -shared -o $@ $(RULES_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib
+	@$(LINK_CMD) -shared -o $@ $(RULES_DEBUG_OBJ) $(DEBUG_LNK_FLAGS_POST) -Lbin/out/debug -ltcatlib -lole32
 
 $(RULES_DEBUG_OBJ): $(OBJ_DIR)/debug/%.o: src/%.cpp
 	$(info $< --> $@)
@@ -376,7 +377,7 @@ RULES_RELEASE_OBJ = $(subst src,$(OBJ_DIR)/release,$(patsubst %.cpp,%.o,$(RULES_
 $(OUT_DIR)/release/rules.dll: $(RULES_RELEASE_OBJ) $(OUT_DIR)/release/tcatlib.lib
 	$(info $< --> $@)
 	@mkdir -p $(OUT_DIR)/release
-	@$(LINK_CMD) -shared -o $@ $(RULES_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib
+	@$(LINK_CMD) -shared -o $@ $(RULES_RELEASE_OBJ) $(RELEASE_LNK_FLAGS_POST) -Lbin/out/release -ltcatlib -lole32
 
 $(RULES_RELEASE_OBJ): $(OBJ_DIR)/release/%.o: src/%.cpp
 	$(info $< --> $@)
