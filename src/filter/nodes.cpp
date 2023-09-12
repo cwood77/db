@@ -59,6 +59,18 @@ void nodeFactory::chain(std::unique_ptr<filterNode>& pRoot, types t, const std::
          demandEmpty(arg);
          chain(pRoot,new equalsNode);
          break;
+      case kNot:
+         demandEmpty(arg);
+         chain(pRoot,new notNode);
+         break;
+      case kAnd:
+         demandEmpty(arg);
+         chain(pRoot,new andNode);
+         break;
+      case kOr:
+         demandEmpty(arg);
+         chain(pRoot,new orNode);
+         break;
       default:
          throw std::runtime_error("unimplemented filter node type");
    }

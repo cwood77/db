@@ -68,6 +68,38 @@ public:
    }
 };
 
+class notNode : public filterNode {
+public:
+   virtual void evaluate(const model::record& r, model::iFilterStack& s) const
+   {
+      auto operand = s.popBool();
+      s.pushBool(!operand);
+      filterNode::evaluate(r,s);
+   }
+};
+
+class andNode : public filterNode {
+public:
+   virtual void evaluate(const model::record& r, model::iFilterStack& s) const
+   {
+      auto lhs = s.popBool();
+      auto rhs = s.popBool();
+      s.pushBool(lhs && rhs);
+      filterNode::evaluate(r,s);
+   }
+};
+
+class orNode : public filterNode {
+public:
+   virtual void evaluate(const model::record& r, model::iFilterStack& s) const
+   {
+      auto lhs = s.popBool();
+      auto rhs = s.popBool();
+      s.pushBool(lhs || rhs);
+      filterNode::evaluate(r,s);
+   }
+};
+
 class filterStack : public model::iFilterStack {
 public:
    virtual std::string popString();
@@ -85,7 +117,10 @@ public:
    enum types {
       kStringLiteral,
       kFieldName,
-      kEquals
+      kEquals,
+      kNot,
+      kAnd,
+      kOr
    };
 
    virtual void chain(std::unique_ptr<filterNode>& pRoot, types t, const std::string& arg = "") = 0;

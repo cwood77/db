@@ -27,6 +27,12 @@ model::iFilterNode& parser::parse(const std::string& x)
       }
       else if(cmn::startsWithAndAdvance(pThumb,"=="))
          m_nf.chain(m_pRoot,iNodeFactory::kEquals);
+      else if(cmn::startsWithAndAdvance(pThumb,"!"))
+         m_nf.chain(m_pRoot,iNodeFactory::kNot);
+      else if(cmn::startsWithAndAdvance(pThumb,"&&"))
+         m_nf.chain(m_pRoot,iNodeFactory::kAnd);
+      else if(cmn::startsWithAndAdvance(pThumb,"||"))
+         m_nf.chain(m_pRoot,iNodeFactory::kOr);
       else
          throw std::runtime_error(std::string("failed to parse here: ") + pThumb);
 
