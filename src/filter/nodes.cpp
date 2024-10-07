@@ -48,7 +48,6 @@ void nodeFactory::chain(std::unique_ptr<filterNode>& pRoot, types t, const std::
    switch(t)
    {
       case kStringLiteral:
-         demandNonEmpty(arg);
          chain(pRoot,new literalNode(arg));
          break;
       case kFieldName:
